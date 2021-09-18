@@ -22,7 +22,7 @@ const commonRoutes = [
         meta: { title: '404' },
         component: () => import('../components/404.vue'),
     },
-    { path: '/', redirect: '/home' },
+    { path: '/', redirect: '/device' },
 ]
 
 // 本地所有的页面 需要配合后台返回的数据生成页面
@@ -32,6 +32,36 @@ export const asyncRoutes = {
         name: 'home',
         meta: { title: '主页' },
         component: () => import('../views/Home.vue'),
+    },
+    device: {
+        path: 'device',
+        name: 'device',
+        meta: { title: '设备管理' },
+        component: () => import('../views/device/Device.vue'),
+    },
+    grounp: {
+        path: 'grounp',
+        name: 'grounp',
+        meta: { title: '分组管理' },
+        component: () => import('../views/grounp/Device.vue'),
+    },
+    marker: {
+        path: 'marker',
+        name: 'marker',
+        meta: { title: '厂商管理' },
+        component: () => import('../views/marker/Device.vue'),
+    },
+    model: {
+        path: 'model',
+        name: 'model',
+        meta: { title: '设备型号管理' },
+        component: () => import('../views/model/Device.vue'),
+    },
+    type: {
+        path: 'type',
+        name: 'type',
+        meta: { title: '设备类型管理' },
+        component: () => import('../views/type/Device.vue'),
     },
     t1: {
         path: 't1',
