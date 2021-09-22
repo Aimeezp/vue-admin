@@ -1,19 +1,23 @@
 <template>
     <div class="login-vue" :style="bg">
-        <div class="container">
-            <p class="title">WELCOME</p>
-            <div class="input-c">
-                <Input prefix="ios-contact" v-model="account" placeholder="用户名" clearable @on-blur="verifyAccount" />
-                <p class="error">{{accountError}}</p>
+        <div>
+            <p style="text-align:center;font-size:40px;margin-bottom:40px;letter-spacing:8px">物联网设备管理平台</p>
+            <div class="container">
+                <p class="title">WELCOME</p>
+                <div class="input-c">
+                    <Input prefix="ios-contact" v-model="account" placeholder="用户名" clearable @on-blur="verifyAccount" />
+                    <p class="error">{{accountError}}</p>
+                </div>
+                <div class="input-c">
+                    <Input type="password" v-model="pwd" prefix="md-lock" placeholder="密码" clearable @on-blur="verifyPwd"
+                    @keyup.enter.native="submit" />
+                    <p class="error">{{pwdError}}</p>
+                </div>
+                <Button :loading="isShowLoading" class="submit" type="primary" @click="submit">登陆</Button>
+                <p class="account"><span @click="register">注册账号</span> | <span @click="forgetPwd">忘记密码</span></p>
             </div>
-            <div class="input-c">
-                <Input type="password" v-model="pwd" prefix="md-lock" placeholder="密码" clearable @on-blur="verifyPwd"
-                @keyup.enter.native="submit" />
-                <p class="error">{{pwdError}}</p>
-            </div>
-            <Button :loading="isShowLoading" class="submit" type="primary" @click="submit">登陆</Button>
-            <p class="account"><span @click="register">注册账号</span> | <span @click="forgetPwd">忘记密码</span></p>
         </div>
+
     </div>
 </template>
 
@@ -96,6 +100,7 @@ export default {
 .login-vue .container {
     background: rgba(255, 255, 255, .5);
     width: 300px;
+    margin:auto;
     text-align: center;
     border-radius: 10px;
     padding: 30px;

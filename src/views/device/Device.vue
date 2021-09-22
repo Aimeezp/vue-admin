@@ -155,8 +155,8 @@ import axios from 'axios'
         backgroudColor: '#EBF4FF',
         color: '#171717',
         dataForm: {
-            groupName: 'Lan',
-            makerId: '123',
+            groupName: '',
+            makerId: '',
             modelId:'',
             onlineState:'',
             serialNumber:'',
@@ -238,16 +238,17 @@ import axios from 'axios'
       },
       // 获取数据列表
       getDataList () {
-        // this.dataListLoading = true
-      //   axios.get('http://101.34.215.29:9000/web/device', {
-      // 　　params: Object.assign({},this.dataForm,{pageNumber:this.pageSize,pageSize:this.pageIndex})
-      //   }).then(function (res) {
-      //       this.dataList = res.data.data.list
-      //       this.totalPage = res.data.data.total
-       //     this.dataListLoading = false
-      //   }).catch(function (error) {
+        this.dataListLoading = true
+        axios.get('http://101.34.215.29:9000/web/device', 
+        {
+      　　params: Object.assign({},this.dataForm,{pageNumber:this.pageSize,pageSize:this.pageIndex})
+        }).then(function (res) {
+            this.dataList = res.data.data.list
+            this.totalPage = res.data.data.total
+           this.dataListLoading = false
+        }).catch(function (error) {
 
-      //   });
+        });
       },
       // 每页数
       sizeChangeHandle (val) {
