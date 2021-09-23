@@ -126,7 +126,7 @@
         <el-button type="text" size="small">设备详情</el-button>
         <el-button @click="addOrUpdateHandle(scope.row.id)" type="text" size="small">编辑</el-button>
         <el-button type="text" size="small">上报详情</el-button>
-        <el-button type="text" size="small" @click="deleteDevice(scope.$index)">删除</el-button>
+        <el-button type="text" size="small" @click="deleteDevice(scope.row.id)">删除</el-button>
       </template>
     </el-table-column>
     </el-table>
@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import request from '@/utils/request'
   import AddOrUpdate from './DeviceAdd'
   export default {
     data () {
@@ -164,22 +164,54 @@ import axios from 'axios'
             typeId:'',
         },
         deviceTypeList:[
+  {
+            label:'智能烟感',
+            value:1
+          },
             {
-                value:'smoke',
-                label:'烟感'
-            }
+            label:'智能空气监测',
+            value:2
+          },
+            {
+            label:'智能红外',
+            value:3
+          },
+            {
+            label:'智能井盖',
+            value:4
+          },
         ],
         deviceMarkerList:[
+        {
+            label:'小米',
+            value:1
+          },
             {
-                value:'smoke',
-                label:'烟感'
-            }
+            label:'华为',
+            value:2
+          },
+            {
+            label:'中兴',
+            value:3
+          },
         ],
         deviceModelList:[
+          {
+            label:'SM001',
+            value:'SM001'
+          },
             {
-                value:'smoke',
-                label:'烟感'
-            }
+            label:'SM002',
+            value:'SM002'
+          },
+            {
+            label:'WE001',
+            value:'WE001'
+          },
+            {
+            label:'WE002',
+            value:'WE002'
+          }
         ],
         dataList: [
             {
@@ -233,22 +265,25 @@ import axios from 'axios'
       handleError(){
 
       },
-      deleteDevice(index){
-        this.dataList.splice(index,1)
+      deleteDevice(id){
+              request.delete('http://101.34.215.29:9000/web/device',{
+                params:{id:id}
+              }).then(res => {
+                  if(res.code === 0){
+                    this.$message.success('删除成功！')
+                  }
+                })
       },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        axios.get('http://101.34.215.29:9000/web/device', 
-        {
-      　　params: Object.assign({},this.dataForm,{pageNumber:this.pageSize,pageSize:this.pageIndex})
-        }).then(function (res) {
-            this.dataList = res.data.data.list
-            this.totalPage = res.data.data.total
-           this.dataListLoading = false
-        }).catch(function (error) {
-
-        });
+        request.get('http://101.34.215.29:9000/web/device',{
+        params:Object.assign({},this.dataForm,{pageNumber:this.pageIndex,pageSize:this.pageSize})
+        }).then(res => {
+                  this.dataList = res.data.list
+                  this.totalPage = res.data.total
+                  this.dataListLoading = false
+                })
       },
       // 每页数
       sizeChangeHandle (val) {

@@ -4,34 +4,46 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
-      <el-form-item label="设备类型" prop="deviceTypeName">
-        <el-input v-model="dataForm.deviceTypeName" placeholder="设备类型" ></el-input>
-      </el-form-item>
-        <el-form-item label="厂商" prop="deviceMakerName">
-        <el-input v-model="dataForm.deviceMakerName" placeholder="厂商"></el-input>
-      </el-form-item>
-       <el-form-item label="型号" prop="model">
-        <el-input v-model="dataForm.deviceModelName" placeholder="型号"></el-input>
-      </el-form-item>
-       <el-form-item label="分组" prop="groupName">
-        <el-input v-model="dataForm.groupName" placeholder="分组"></el-input>
-      </el-form-item>
-       <!-- <el-form-item label="厂商" prop="organCode">
-         <el-select v-model="dataForm.organCode" >
-              <el-option v-for="(item, index) in organList"
+      <el-form-item label="设备类型" prop="deviceTypeId">
+        <el-select v-model="dataForm.deviceTypeId" >
+              <el-option v-for="(item, index) in deviceTypeIdList"
                :key="index"
-                :label="item.deptName"
-                :value="item.deptCode"
-                placeholder="厂商">
+                :label="item.label"
+                :value="item.value">
              </el-option>
          </el-select>
-      </el-form-item> -->
-      <el-form-item label="是否在线" size="mini" prop="onlineState">
-        <el-radio-group v-model="dataForm.onlineState">
-          <el-radio :label="1">在线</el-radio>
-          <el-radio :label="0">不在线</el-radio>
-        </el-radio-group>
       </el-form-item>
+            <el-form-item label="设备型号" prop="deviceModelId">
+        <el-select v-model="dataForm.deviceModelId" >
+              <el-option v-for="(item, index) in deviceModelIdList"
+               :key="index"
+                :label="item.label"
+                :value="item.value">
+             </el-option>
+         </el-select>
+      </el-form-item>
+            <el-form-item label="厂商" prop="deviceMakerId">
+        <el-select v-model="dataForm.deviceMakerId" >
+              <el-option v-for="(item, index) in deviceMakerIdList"
+               :key="index"
+                :label="item.label"
+                :value="item.value">
+             </el-option>
+         </el-select>
+      </el-form-item>
+            <el-form-item label="分组" prop="groupId">
+        <el-select v-model="dataForm.groupId" >
+              <el-option v-for="(item, index) in groupIdList"
+               :key="index"
+                :label="item.label"
+                :value="item.value">
+             </el-option>
+         </el-select>
+      </el-form-item>
+      <el-form-item label="设备序列号" prop="serialNumber">
+        <el-input  v-model="dataForm.serialNumber" placeholder="设备序列号"></el-input>
+      </el-form-item>
+       
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -41,46 +53,94 @@
 </template>
 
 <script>
-import axios from 'axios'
+import request from '@/utils/request'
   export default {
     data () {
       return {
         visible: false,
-        roleList: [],
-        organList:[],
-        departmentList:[],
-        userSourceNamelist:[],
+        deviceTypeIdList: [
+          {
+            label:'智能烟感',
+            value:1
+          },
+            {
+            label:'智能空气监测',
+            value:2
+          },
+            {
+            label:'智能红外',
+            value:3
+          },
+            {
+            label:'智能井盖',
+            value:4
+          },
+        ],
+        deviceMakerIdList:[
+          {
+            label:'小米',
+            value:1
+          },
+            {
+            label:'华为',
+            value:2
+          },
+            {
+            label:'中兴',
+            value:3
+          },
+        ],
+        deviceModelIdList:[   {
+            label:'SM001',
+            value:'SM001'
+          },
+            {
+            label:'SM002',
+            value:'SM002'
+          },
+            {
+            label:'WE001',
+            value:'WE001'
+          },
+            {
+            label:'WE002',
+            value:'WE002'
+          },],
+        groupIdList:[
+          {
+            label:'COM.TEST',
+            value:'COM.TEST'
+          }
+        ],
         dataForm: {
-          deviceTypeName:'',
-          deviceMakerName:'',
-          deviceModelName:'',
-          groupName:'',
-          onlineState:'',
+          deviceTypeId:'',
+          deviceMakerId:'',
+          deviceModelId:'',
+          groupId:'',
+          serialNumber:'',
         },
         dataRule: {
-          deviceTypeName: [
+          deviceTypeId: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
-          deviceMakerName: [
+          deviceMakerId: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
-          deviceModelName: [
+          deviceModelId: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
-          groupName: [
+          groupId: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
-          onlineState: [
+          serialNumber: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
         },
         loading:false,
-        deviceId:'',
       }
     },
     methods: {
       init (id) {
-        this.deviceId = id;
           this.visible = true
           this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
@@ -94,15 +154,9 @@ import axios from 'axios'
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.loading = true
-            axios({
-                method: 'post',
-                url: 'http://101.34.215.29:9000/web/device',
-                data: this.dataForm
-            })
-            .then(function (res) {
-              if(res.data.code === 0){
-                this.$message({
+                this.loading = true
+        request.post('http://101.34.215.29:9000/web/device',this.dataForm).then(res => {
+                 this.$message({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500,
@@ -111,8 +165,7 @@ import axios from 'axios'
                     this.$parent.getDataList()
                   }
                 })
-                this.loading = false 
-              }
+              this.loading = false 
             })
           }
         })

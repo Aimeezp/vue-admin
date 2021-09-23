@@ -5,11 +5,11 @@
             <div class="container">
                 <p class="title">WELCOME</p>
                 <div class="input-c">
-                    <Input prefix="ios-contact" v-model="account" placeholder="用户名" clearable @on-blur="verifyAccount" />
+                    <Input prefix="ios-contact" v-model="account" placeholder="用户名" clearable  />
                     <p class="error">{{accountError}}</p>
                 </div>
                 <div class="input-c">
-                    <Input type="password" v-model="pwd" prefix="md-lock" placeholder="密码" clearable @on-blur="verifyPwd"
+                    <Input type="password" v-model="pwd" prefix="md-lock" placeholder="密码" clearable 
                     @keyup.enter.native="submit" />
                     <p class="error">{{pwdError}}</p>
                 </div>
@@ -22,12 +22,13 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: 'login',
     data() {
         return {
             account: 'admin',
-            pwd: 'admin',
+            pwd: 'Admin@100010',
             accountError: '',
             pwdError: '',
             isShowLoading: false,
@@ -67,23 +68,46 @@ export default {
 
         },
         submit() {
-            if (this.account === 'admin' && this.pwd === 'admin') {
-                this.isShowLoading = true
+            let that = this
+            axios({
+                method: 'post',
+                url: 'http://101.34.215.29:9000/web/auth',
+                data: {
+                     account: this.account,
+                    password: this.pwd,
+                    code:'10101',
+                    type:1
+                }
+            })
+            .then(function (res) {
+              if(res.data.code === 0){
                 // 登陆成功 设置用户信息
                 localStorage.setItem('userImg', 'https://avatars3.githubusercontent.com/u/22117876?s=460&v=4')
                 localStorage.setItem('userName', '姚强')
                 // 登陆成功 假设这里是后台返回的 token
-                localStorage.setItem('token', 'i_am_token')
-                this.$router.push({ path: this.redirect || '/' })
-            } else {
-                if (this.account !== 'admin') {
-                    this.accountError = '账号为admin'
-                }
+                localStorage.setItem('token', res.data.data.token)
+                that.$router.push({ path: '/' })
+              }else{
+                  this.$message.error(data.message)
+              }
+            })
+            // if (this.account === 'admin' && this.pwd === 'admin') {
+            //     this.isShowLoading = true
+            //     // 登陆成功 设置用户信息
+            //     localStorage.setItem('userImg', 'https://avatars3.githubusercontent.com/u/22117876?s=460&v=4')
+            //     localStorage.setItem('userName', '姚强')
+            //     // 登陆成功 假设这里是后台返回的 token
+            //     localStorage.setItem('token', 'i_am_token')
+            //     this.$router.push({ path: this.redirect || '/' })
+            // } else {
+            //     if (this.account !== 'admin') {
+            //         this.accountError = '账号为admin'
+            //     }
 
-                if (this.pwd !== 'admin') {
-                    this.pwdError = '密码为admin'
-                }
-            }
+            //     if (this.pwd !== 'admin') {
+            //         this.pwdError = '密码为admin'
+            //     }
+            // }
         },
     },
 }
