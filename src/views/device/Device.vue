@@ -147,7 +147,6 @@
 </template>
 
 <script>
-import request from '@/utils/request'
   import AddOrUpdate from './DeviceAdd'
   export default {
     data () {
@@ -266,7 +265,7 @@ import request from '@/utils/request'
 
       },
       deleteDevice(id){
-              request.delete('http://101.34.215.29:9000/web/device',{
+              this.$request.delete('http://101.34.215.29:9000/web/device',{
                 params:{id:id}
               }).then(res => {
                   if(res.code === 0){
@@ -278,7 +277,7 @@ import request from '@/utils/request'
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        request.get('http://101.34.215.29:9000/web/device',{
+        this.$request.get('http://101.34.215.29:9000/web/device',{
         params:Object.assign({},this.dataForm,{pageNumber:this.pageIndex,pageSize:this.pageSize})
         }).then(res => {
                   this.dataList = res.data.list

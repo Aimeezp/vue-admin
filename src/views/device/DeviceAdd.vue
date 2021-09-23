@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import request from '@/utils/request'
   export default {
     data () {
       return {
@@ -155,7 +154,7 @@ import request from '@/utils/request'
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
                 this.loading = true
-        request.post('http://101.34.215.29:9000/web/device',this.dataForm).then(res => {
+        this.$request.post('http://101.34.215.29:9000/web/device',this.dataForm).then(res => {
                  this.$message({
                   message: '操作成功',
                   type: 'success',
