@@ -271,6 +271,7 @@ import request from '@/utils/request'
               }).then(res => {
                   if(res.code === 0){
                     this.$message.success('删除成功！')
+                    this.getDataList()
                   }
                 })
       },
